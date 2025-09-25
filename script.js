@@ -8,7 +8,8 @@
  */
 const peer = new Peer(''+Math.floor(Math.random()*2**18).toString(36).padStart(4,0), {
     host: location.hostname,
-    port: location.port || 8000,
+    port: location.hostname.includes('localhost') ? (location.port || 8000) : 443,
+    secure: location.protocol === 'https:' || location.hostname.includes('onrender.com'),
     debug: 1,
     path: '/myapp'
 });
