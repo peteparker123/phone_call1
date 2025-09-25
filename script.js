@@ -146,11 +146,15 @@ hangUpBtn.addEventListener('click', function (){
 /**
  * When the peer has connected to the server, diplay the peer ID
  */
-peer.on('open', function () {
-    console.log('Peer opened with ID:', peer.id);
+peer.on('open', function (id) {
+    console.log('Peer opened with ID:', id);
+    console.log('Peer object ID:', peer.id);
     const castStatus = document.getElementById('caststatus');
     if (castStatus) {
-        castStatus.textContent = `Your device ID is: ${peer.id}`;
+        castStatus.textContent = `Your device ID is: ${id}`;
+        console.log('Updated caststatus element with ID:', id);
+    } else {
+        console.error('caststatus element not found!');
     }
 });
 
@@ -186,6 +190,28 @@ peer.on('call', function(call) {
 /**
  * Log errors to the console when they occur
  */
-peer.on('error', err => console.error(err));
+peer.on('error', err => {
+    console.error('PeerJS Error:', err);
+    const castStatus = document.getElementById('caststatus');
+    if (castStatus) {
+        castStatus.textContent = `Connection error: ${err.message || err}`;
+    }
+});
+
+// Add DOM content loaded event to ensure elements are available
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('DOM loaded');
+    const castStatus = document.getElementById('caststatus');
+    if (castStatus) {
+        console.log('caststatus element found:', castStatus);
+        if (peer.id) {
+            castStatus.textContent = `Your device ID is: ${peer.id}`;
+        } else {
+            castStatus.textContent = 'Connecting...';
+        }
+    } else {
+        console.error('caststatus element not found in DOM!');
+    }
+});
 
 getLocalStream();
