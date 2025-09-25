@@ -6,13 +6,28 @@
  * Instantiate a new Peer, passing to it an alphanumeric string as an ID and options obj
  * @type {Peer}
  */
-const peer = new Peer(''+Math.floor(Math.random()*2**18).toString(36).padStart(4,0), {
+
+// Detect environment and configure PeerJS accordingly
+const isLocalhost = location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+const isRender = location.hostname.includes('onrender.com');
+const useSecure = location.protocol === 'https:' || isRender;
+
+// For Render, don't specify port (use default). For localhost, use 8000
+const peerConfig = {
     host: location.hostname,
-    port: location.hostname.includes('localhost') ? (location.port || 8000) : 443,
-    secure: location.protocol === 'https:' || location.hostname.includes('onrender.com'),
+    secure: useSecure,
     debug: 1,
     path: '/myapp'
-});
+};
+
+// Only add port for localhost
+if (isLocalhost) {
+    peerConfig.port = location.port || 8000;
+}
+
+console.log('PeerJS Configuration:', peerConfig);
+
+const peer = new Peer(''+Math.floor(Math.random()*2**18).toString(36).padStart(4,0), peerConfig);
 
 window.peer = peer;
 
