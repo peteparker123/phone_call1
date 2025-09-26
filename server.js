@@ -16,8 +16,8 @@ const peerServer = ExpressPeerServer(server, {
     debug: true,
     path: '/myapp',
     ssl: {},
-    allow_discovery: true,
-    port: process.env.PORT || 8000
+    allow_discovery: true
+    //port: process.env.PORT || 8000
 });
 
 app.use(peerServer);
